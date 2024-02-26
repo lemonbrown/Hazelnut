@@ -2,17 +2,19 @@
 import express, { NextFunction, Request, Response } from "npm:express@4.18.2";
 import { load } from "https://deno.land/std@0.217.0/dotenv/mod.ts";
 import jwt from "npm:jsonwebtoken";
-import * as bcrypt from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
+//import * as bcrypt from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
+
+// @deno-types="npm:@types/bcryptjs"
+import bcrypt from "npm:bcryptjs";
 import { DB } from "https://deno.land/x/sqlite/mod.ts";
 import migrate from "./migrations/migrate.ts";
 import CreateUserRequest from "./requests/CreateUserRequest.ts";
 import LoginUserRequest from "./requests/LoginUserRequest.ts";
+import User from "./models/User.ts";
 
 const env = await load();
 
-const db = new DB("hazelnut.db");
-
-migrate(db);
+migrate("hazelnut.db");
 
 const app = express();
 const port = Number(Deno.env.get("PORT")) || 3000;
@@ -38,11 +40,14 @@ app.post("/api/user/register", async (_req: Request, res: Response) => {
         return;
     }
 
-    const existingUser = db.query(`SELECT * FROM user WHERE email = '${request.email}' `);
+    const db = new DB("hazelnut.db");
 
-    if(existingUser.length > 0){
+    const existingUser : User = db.query(`SELECT * FROM user WHERE email = '${request.email}' `);
+
+    if(!existingUser){
         res.status(400).send("Email is already registered");
         return;
+  
     }
 
     //hash password
@@ -74,11 +79,39 @@ app.post("/api/user/register", async (_req: Request, res: Response) => {
 
 app.post("/api/user/login", async (_req: Request, res: Response) => {
 
-    // const request : LoginUserRequest = _req.body
+    const request : LoginUserRequest = _req.body
+    const db = new DB("hazelnut.db");
+    const query = db.query(`SELECT * FROM user WHERE email = '${request.email}' `);
+    const existingUser : User = query.map((user: any) => {
+        return {
+            id: user[0],
+            email: user[1],
+            password: user[2]
+        } 
+    })[0];
 
-    // const isPasswordValid = await bcrypt.compare(request.password, thepassword);
+    if(!existingUser){
+        res.status(401).send("Invalid email or password");
+        return;
+    }
 
-    // res.status(200).send(isPasswordValid);
+    console.log(existingUser)
+    const isPasswordValid = await bcrypt.compare(request.password, existingUser.password);
+
+    if(!isPasswordValid){
+        res.status(401).send("Invalid email or password");
+        return;
+    }
+
+    const jwtKey = env["JWT_KEY"];
+    const payload = { _id: existingUser.id, roles: [0] };
+    const accessToken = jwt.sign(
+        payload,
+        jwtKey,
+        { expiresIn: "14m" }
+    );
+
+    res.status(200).send(accessToken);
 });
 
 app.listen(port, () => {

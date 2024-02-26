@@ -1,9 +1,17 @@
 interface User {
     
-    Id: number,
+    id: number,
 
-    Email: string,
+    email: string,
 
-    createdDate: Date
+    password: string,
+
+    refreshToken: string,
+
+    createdDate: Date,
+
+    moedifiedDate: Date
     
 }
+
+export default User;

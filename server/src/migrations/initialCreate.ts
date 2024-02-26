@@ -8,6 +8,7 @@ export default function initialCreate(db : DB){
             email TEXT,
             password TEXT,
             name TEXT,
+            refreshToken TEXT,
             createdDate TEXT,
             modifiedDate TEXT
         )
