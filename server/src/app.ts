@@ -1,6 +1,8 @@
 // @deno-types="npm:@types/express@4"
 import express, { NextFunction, Request, Response } from "npm:express@4.18.2";
 import { load } from "https://deno.land/std@0.217.0/dotenv/mod.ts";
+
+// @deno-types="npm:@types/jsonwebtoken"
 import jwt from "npm:jsonwebtoken";
 //import * as bcrypt from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
 
@@ -95,7 +97,6 @@ app.post("/api/user/login", async (_req: Request, res: Response) => {
         return;
     }
 
-    console.log(existingUser)
     const isPasswordValid = await bcrypt.compare(request.password, existingUser.password);
 
     if(!isPasswordValid){
@@ -113,6 +114,34 @@ app.post("/api/user/login", async (_req: Request, res: Response) => {
 
     res.status(200).send(accessToken);
 });
+
+app.get("/api/user", async (_req: Request, res: Response) => {
+
+    const accessToken = _req.get("Authorization");
+
+    if(!accessToken){
+        res.status(400).send("Cannot find user token");
+        return;
+    }
+    
+    console.log(accessToken);
+    
+    const jwtKey = env["JWT_KEY"];
+    const payload = jwt.verify(accessToken.split(" ")[1], jwtKey);
+
+    console.log(accessToken, payload);
+
+    // const db = new DB("hazelnut.db");
+    // const query = db.query(`SELECT * FROM user WHERE id = '${payload._id}' `);
+    // const existingUser : User = query.map((user: any) => {
+    //     return {
+    //         id: user[0],
+    //         email: user[1],
+    //         password: user[2]
+    //     } 
+    // })[0];
+});
+
 
 app.listen(port, () => {
     console.log(`Listening on ${port} ...`);

@@ -19,8 +19,7 @@ export const actions = {
 
             let token = "";
             let data = await response.text();
-            token = data;
-        
+            token = data;        
 
             cookies.set('AuthorizationToken', `Bearer ${token}`, {
                 httpOnly: true,
