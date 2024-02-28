@@ -8,7 +8,7 @@
       <div class="block">
         <div class="field">
           <p class="control has-icons-left has-icons-right">
-            <input class="input" type="email" placeholder="">
+            <input class="input" type="email" placeholder="search by text or #tag...">
             <span class="icon is-small is-left">
               
             </span>
@@ -20,8 +20,10 @@
       </div>
 
       <div class="block">
-        <h1 class="title is-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sapien purus, feugiat in sem eget, pellentesque vulputate felis. </h1>
-        <button class="button is-rounded ">
+        <div class="block">
+          <span class="has-text-weight-bold is-size-4	">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sapien purus, feugiat in sem eget, pellentesque vulputate felis. </span>
+        </div>
+          <button class="button is-rounded ">
           <span class="material-symbols-outlined">
           chat_bubble
           </span>

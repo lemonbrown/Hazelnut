@@ -1,5 +1,5 @@
 // @deno-types="npm:@types/express@4"
-import express, { NextFunction, Request, Response } from "npm:express@4.18.2";
+import express, { NextFunction, Request, Response, request } from "npm:express@4.18.2";
 import { load } from "https://deno.land/std@0.217.0/dotenv/mod.ts";
 
 // @deno-types="npm:@types/jsonwebtoken"
@@ -56,6 +56,8 @@ app.post("/api/user/register", async (_req: Request, res: Response) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(request.password, salt);
 
+    console.log(hashedPassword)
+
     //create refresh token
     let randomNumbers = "";
     for(let i = 0; i < 32; i++){
@@ -65,7 +67,7 @@ app.post("/api/user/register", async (_req: Request, res: Response) => {
 
     const refreshToken = btoa(randomNumbers);
 
-    db.execute(`INSERT INTO user (email, password, createdDate, refreshToken) VALUES ('${request.email}', '${hashedPassword}}', '${new Date(Date.now()).toJSON()}', '${refreshToken}')`);
+    db.execute(`INSERT INTO user (email, password, createdDate, refreshToken) VALUES ('${request.email}', '${hashedPassword}', '${new Date(Date.now()).toJSON()}', '${refreshToken}')`);
     const userId = db.query(`SELECT last_insert_rowid()`);
 
     const jwtKey = env["JWT_KEY"];
@@ -109,7 +111,7 @@ app.post("/api/user/login", async (_req: Request, res: Response) => {
     const accessToken = jwt.sign(
         payload,
         jwtKey,
-        { expiresIn: "14m" }
+        { expiresIn: "1y" }
     );
 
     res.status(200).send(accessToken);
@@ -122,24 +124,34 @@ app.get("/api/user", async (_req: Request, res: Response) => {
     if(!accessToken){
         res.status(400).send("Cannot find user token");
         return;
-    }
-    
-    console.log(accessToken);
-    
+    }    
+
     const jwtKey = env["JWT_KEY"];
-    const payload = jwt.verify(accessToken.split(" ")[1], jwtKey);
+    let payload = {};
+    
+    try{
+         payload = jwt.verify(accessToken.split(" ")[1], jwtKey);
+    }
+    catch(ex){
 
-    console.log(accessToken, payload);
+    }
 
-    // const db = new DB("hazelnut.db");
-    // const query = db.query(`SELECT * FROM user WHERE id = '${payload._id}' `);
-    // const existingUser : User = query.map((user: any) => {
-    //     return {
-    //         id: user[0],
-    //         email: user[1],
-    //         password: user[2]
-    //     } 
-    // })[0];
+    const db = new DB("hazelnut.db");
+    const query = db.query(`SELECT id, email, password, name FROM user WHERE id = '${payload._id}' `);
+    const existingUser : User = query.map((user: any) => {
+        return {
+            id: user[0],
+            email: user[1],
+            password: user[2],
+            name: user[3]
+        } 
+    })[0];
+
+    res.status(200).send({
+        id: existingUser.id,
+        name: existingUser.name
+    });
+
 });
 
 
