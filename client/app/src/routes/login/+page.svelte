@@ -8,21 +8,27 @@
             <div class="block">
                 <span class="title">Login</span>
             </div>
-            <form class="" method="POST">
-                <div class="field">
-                  <label class="label">Email</label>
-                  <div class="control">
-                    <input class="input" type="email" placeholder="e.g. alex@example.com" name="email">
+            <div class="block">
+              <form class="" method="POST">
+                  <div class="field">
+                    <label class="label">Email</label>
+                    <div class="control">
+                      <input class="input" type="email" placeholder="e.g. alex@example.com" name="email">
+                    </div>
                   </div>
-                </div>
-                <div class="field">
-                  <label class="label">Password</label>
-                  <div class="control">
-                    <input class="input" type="password" placeholder="********" name="password">
+                  <div class="field">
+                    <label class="label">Password</label>
+                    <div class="control">
+                      <input class="input" type="password" placeholder="********" name="password">
+                    </div>
                   </div>
-                </div>
-                <button class="button" type="submit">Login</button>
-              </form>
+                  <button class="button" type="submit">Login</button>
+                </form>
+            </div>
+            <hr />
+              <div class="block">
+                <a href="/register" class="button is-outlined">create an account</a>
+              </div>
         </div>
     </div>
 </div>

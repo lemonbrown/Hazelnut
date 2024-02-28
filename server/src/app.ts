@@ -28,7 +28,7 @@ app.get("/", (_req, res) => {
     res.status(200).send("Hello from Deno and Express!");
 });
 
-app.post("/api/user/register", async (_req: Request, res: Response) => {
+app.post("/api/users/register", async (_req: Request, res: Response) => {
 
     const request : CreateUserRequest = _req.body
 
@@ -81,7 +81,7 @@ app.post("/api/user/register", async (_req: Request, res: Response) => {
     res.status(200).send(accessToken);
 });
 
-app.post("/api/user/login", async (_req: Request, res: Response) => {
+app.post("/api/users/login", async (_req: Request, res: Response) => {
 
     const request : LoginUserRequest = _req.body
     const db = new DB("hazelnut.db");
@@ -117,7 +117,7 @@ app.post("/api/user/login", async (_req: Request, res: Response) => {
     res.status(200).send(accessToken);
 });
 
-app.get("/api/user", async (_req: Request, res: Response) => {
+app.get("/api/users", async (_req: Request, res: Response) => {
 
     const accessToken = _req.get("Authorization");
 
@@ -152,6 +152,23 @@ app.get("/api/user", async (_req: Request, res: Response) => {
         name: existingUser.name
     });
 
+});
+
+app.get("/api/threads/hot", async (_req: Request, res: Response) => {
+
+    const db = new DB("hazelnut.db");
+    const query = db.query(`SELECT id, title, content, tags FROM thread ORDER BY createdDate DESC `);
+
+    const threads = query.map((thread) => {
+        return {
+            id: thread[0],
+            title: thread[1],
+            content: thread[2],
+            tags: thread[3]            
+        }
+    });
+
+    res.status(200).send(threads);
 });
 
 

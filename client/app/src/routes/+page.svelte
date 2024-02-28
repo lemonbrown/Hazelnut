@@ -1,5 +1,5 @@
 <script>
-  import pray from "$lib/assets/icons8-pray-48.png"
+  export let data;
 </script>
 
 <div class="columns is-mobile mt-3">
@@ -18,18 +18,38 @@
           </p>
         </div>
       </div>
-
+      {#each data.threads as thread}
       <div class="block">
         <div class="block">
-          <span class="has-text-weight-bold is-size-4	">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sapien purus, feugiat in sem eget, pellentesque vulputate felis. </span>
+          <div>
+            <span class="has-text-weight-bold is-size-4	">{thread.title}</span>
+          </div>
+          <div>
+            <div class="is-flex">
+              <div class="is-flex-direction-row mr-2 has-text-weight-bold ">
+                  #test
+              </div>   
+              <div class="is-flex-direction-row has-text-weight-bold ">
+                #test2
+            </div>             
+            </div>
+          </div>
         </div>
-          <button class="button is-rounded ">
-          <span class="material-symbols-outlined">
-          chat_bubble
-          </span>
-          <div class="ml-1 mb-1">15</div>
-        </button>
+        <div>
+          <div class="is-flex">
+            <div class="is-flex-direction-row">
+              <span class="material-symbols-outlined">
+                chat_bubble
+                </span>
+            </div>
+            <div class="is-flex-direction-row">
+              <div class="ml-1 mb-1">15</div>
+            </div>
+          </div>
+
+        </div>
       </div>
+      {/each}
     
     </div>
   </div>

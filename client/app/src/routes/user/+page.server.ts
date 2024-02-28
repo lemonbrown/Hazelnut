@@ -7,7 +7,7 @@ export function load({ cookies }) {
 
     if(userToken){
 
-        fetch("http://localhost:3000/api/user",{
+        fetch("http://localhost:3000/api/users",{
             method: "GET",
             headers:{
                 "Authorization": "Bearer " + userToken

@@ -12,7 +12,7 @@ export const actions = {
 
         const data = await request.formData();
 
-		let response = await fetch("http://localhost:3000/api/user/register", {
+		let response = await fetch("http://localhost:3000/api/users/register", {
             method: "POST",
             body: JSON.stringify({
                 email: data.get('email'),

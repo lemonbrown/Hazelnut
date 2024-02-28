@@ -4,7 +4,7 @@ export const actions = {
 
         const data = await request.formData();
 
-		let response = await fetch("http://localhost:3000/api/user/login", {
+		let response = await fetch("http://localhost:3000/api/users/login", {
             method: "POST",
             body: JSON.stringify({
                 email: data.get('email'),
@@ -31,7 +31,6 @@ export const actions = {
         }else{
             
             let messages = await response.text();
-            console.log(messages)
         }
 	}
 };

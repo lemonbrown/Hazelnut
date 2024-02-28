@@ -1,3 +1,5 @@
+import { redirect } from '@sveltejs/kit';
+
 export async function load({ cookies }) {
 
     const userBearerToken = cookies.get('AuthorizationToken')?.split(" ");
@@ -27,7 +29,6 @@ export async function load({ cookies }) {
         }
     }
 
-	return {
-		
-	};
+    redirect(302, '/login')
+
 }

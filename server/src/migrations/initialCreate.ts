@@ -11,7 +11,20 @@ export default function initialCreate(db : DB){
             refreshToken TEXT,
             createdDate TEXT,
             modifiedDate TEXT
-        )
+        );
+
+        CREATE TABLE IF NOT EXISTS thread(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT,
+            content TEXT,
+            userId TEXT,
+            tags TEXT,
+            upvote INTEGER,
+            downvote INTEGER,
+            views INTETER,
+            createdDate TEXT,
+            modifiedDate TEXT
+        );
     `);
 
 }

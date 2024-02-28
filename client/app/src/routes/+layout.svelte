@@ -11,7 +11,7 @@
     <div class="navbar-end">
         <div class="navbar-item">
             <span class="mr-3">
-                {data.user.name}
+                {data?.user?.name ?? ""}
             </span>
           <div class="buttons">
             <a href="/user/thread" class="button is-outlined">
