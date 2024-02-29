@@ -20,11 +20,14 @@
       </div>
       {#each data.threads as thread}
       <div class="block">
-        <div class="block">
-          <div>
+        <div class="mb-2 is-flex">
+          <div class="is-flex-direction-row">
+            <span class="has-text-weight-bold is-size-4	mr-3">{thread.upvotes}</span>
+          </div>
+          <div class="is-flex-direction-row">
             <span class="has-text-weight-bold is-size-4	">{thread.title}</span>
           </div>
-          <div>
+          <!-- <div>
             <div class="is-flex">
               <div class="is-flex-direction-row mr-2 has-text-weight-bold ">
                   #test
@@ -33,20 +36,7 @@
                 #test2
             </div>             
             </div>
-          </div>
-        </div>
-        <div>
-          <div class="is-flex">
-            <div class="is-flex-direction-row">
-              <span class="material-symbols-outlined">
-                chat_bubble
-                </span>
-            </div>
-            <div class="is-flex-direction-row">
-              <div class="ml-1 mb-1">15</div>
-            </div>
-          </div>
-
+          </div> -->
         </div>
       </div>
       {/each}

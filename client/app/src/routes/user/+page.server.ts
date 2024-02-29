@@ -2,7 +2,7 @@ import { redirect } from "@sveltejs/kit"
 
 export function load({ cookies }) {
 
-    const userToken = cookies.get('AuthorizationToken').split(" ")[1];
+    const userToken = cookies.get('AuthorizationToken')?.split(" ")[1];
     console.log(userToken)
 
     if(userToken){
@@ -14,7 +14,11 @@ export function load({ cookies }) {
             }
         })
 
+    }else{
+        redirect(302, '/login')
     }    
+
+
 	return {
 		
 	};

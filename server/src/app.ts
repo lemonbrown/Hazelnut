@@ -13,6 +13,8 @@ import migrate from "./migrations/migrate.ts";
 import CreateUserRequest from "./requests/CreateUserRequest.ts";
 import LoginUserRequest from "./requests/LoginUserRequest.ts";
 import User from "./models/User.ts";
+import Thread from "./models/Thread.ts";
+import CreateThreadRequest from "./requests/CreateThreadRequest.ts";
 
 const env = await load();
 
@@ -43,7 +45,6 @@ app.post("/api/users/register", async (_req: Request, res: Response) => {
     }
 
     const db = new DB("hazelnut.db");
-
     const existingUser : User = db.query(`SELECT * FROM user WHERE email = '${request.email}' `);
 
     if(!existingUser){
@@ -55,8 +56,6 @@ app.post("/api/users/register", async (_req: Request, res: Response) => {
     //hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(request.password, salt);
-
-    console.log(hashedPassword)
 
     //create refresh token
     let randomNumbers = "";
@@ -120,6 +119,7 @@ app.post("/api/users/login", async (_req: Request, res: Response) => {
 app.get("/api/users", async (_req: Request, res: Response) => {
 
     const accessToken = _req.get("Authorization");
+    console.log(accessToken);
 
     if(!accessToken){
         res.status(400).send("Cannot find user token");
@@ -157,20 +157,63 @@ app.get("/api/users", async (_req: Request, res: Response) => {
 app.get("/api/threads/hot", async (_req: Request, res: Response) => {
 
     const db = new DB("hazelnut.db");
-    const query = db.query(`SELECT id, title, content, tags FROM thread ORDER BY createdDate DESC `);
+    const query = db.query(`SELECT id, title, content, tags, upvotes FROM thread ORDER BY createdDate DESC `);
 
     const threads = query.map((thread) => {
         return {
             id: thread[0],
             title: thread[1],
             content: thread[2],
-            tags: thread[3]            
+            tags: thread[3],
+            upvotes: parseInt(thread[4])            
         }
     });
 
     res.status(200).send(threads);
 });
 
+app.post("/api/threads", async (_req: Request, res: Response) => {
+
+    const accessToken = _req.get("Authorization");
+
+    if(!accessToken){
+        res.status(400).send("Cannot find user token");
+        return;
+    }    
+
+    const jwtKey = env["JWT_KEY"];
+    let payload = {};
+    
+    try{
+         payload = jwt.verify(accessToken.split(" ")[1], jwtKey);
+    }
+    catch(ex){ }
+
+    const userId = payload._id;
+
+    const db = new DB("hazelnut.db");
+    const request : CreateThreadRequest = _req.body;
+
+    //get tags from body
+    const regex = /(#[^ ]*)/g;
+    let tags = "";
+    for(const tag of request.content.matchAll(regex)){
+        tags += tag;
+    }
+
+    const thread : Thread = {
+        userId: userId,
+        title: request.title,
+        content: request.content,
+        tags: tags,
+        createdDate: new Date(Date.now()).toJSON()
+    };
+
+    db.execute(`INSERT INTO thread (title,content,tags,userId,createdDate)
+        VALUES ('${thread.title}','${thread.content}', '${thread.tags}','${thread.userId}','${thread.createdDate}')`);
+
+    res.status(200).send(thread);
+});
 
 app.listen(port, () => {
     console.log(`Listening on ${port} ...`);

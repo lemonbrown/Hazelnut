@@ -19,8 +19,8 @@ export default function initialCreate(db : DB){
             content TEXT,
             userId TEXT,
             tags TEXT,
-            upvote INTEGER,
-            downvote INTEGER,
+            upvotes INTEGER,
+            downvotes INTEGER,
             views INTETER,
             createdDate TEXT,
             modifiedDate TEXT
