@@ -119,7 +119,6 @@ app.post("/api/users/login", async (_req: Request, res: Response) => {
 app.get("/api/users", async (_req: Request, res: Response) => {
 
     const accessToken = _req.get("Authorization");
-    console.log(accessToken);
 
     if(!accessToken){
         res.status(400).send("Cannot find user token");

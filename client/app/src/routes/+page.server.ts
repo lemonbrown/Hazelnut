@@ -1,5 +1,6 @@
 export async function load({ cookies }) {
 
+
 	const response = await fetch('http://localhost:3000/api/threads/hot', {
 		method: "GET"		
 	});
@@ -8,5 +9,6 @@ export async function load({ cookies }) {
 
 	return {
 		threads
-	};
+	}
+
 }

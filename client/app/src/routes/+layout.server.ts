@@ -2,8 +2,6 @@ export async function load({ cookies }) {
 
     const userBearerToken = cookies.get('AuthorizationToken')?.split(" ");
 
-    console.log(userBearerToken)
-
     if(userBearerToken?.length > 1){
 
         const userToken = cookies.get('AuthorizationToken').split(" ")[1];
@@ -18,9 +16,6 @@ export async function load({ cookies }) {
             });
 
             const user = await response.json();
-
-            console.log(user)
-
             return {
                 user
             };

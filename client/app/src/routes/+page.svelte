@@ -4,7 +4,6 @@
 
 <div class="columns is-mobile mt-3">
     <div class="column is-half is-offset-one-quarter">
-
       <div class="block">
         <div class="field">
           <p class="control has-icons-left has-icons-right">
@@ -40,6 +39,10 @@
         </div>
       </div>
       {/each}
+
+      {#if data.threads.length <= 0}
+      <div class="block has-text-weight-bold" style='color:lightgray'>Nothing here...</div> 
+      {/if}
     
     </div>
   </div>
