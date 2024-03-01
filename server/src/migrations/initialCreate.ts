@@ -15,6 +15,7 @@ export default function initialCreate(db : DB){
 
         CREATE TABLE IF NOT EXISTS thread(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            uid TEXT,
             title TEXT,
             content TEXT,
             userId TEXT,

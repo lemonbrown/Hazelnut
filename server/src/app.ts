@@ -4,10 +4,9 @@ import { load } from "https://deno.land/std@0.217.0/dotenv/mod.ts";
 
 // @deno-types="npm:@types/jsonwebtoken"
 import jwt from "npm:jsonwebtoken";
-//import * as bcrypt from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
-
 // @deno-types="npm:@types/bcryptjs"
 import bcrypt from "npm:bcryptjs";
+import * as crypto from "https://deno.land/std@0.177.0/node/crypto.ts";
 import { DB } from "https://deno.land/x/sqlite/mod.ts";
 import migrate from "./migrations/migrate.ts";
 import CreateUserRequest from "./requests/CreateUserRequest.ts";
@@ -174,7 +173,6 @@ app.get("/api/threads/hot", async (_req: Request, res: Response) => {
 app.post("/api/threads", async (_req: Request, res: Response) => {
 
     const accessToken = _req.get("Authorization");
-
     if(!accessToken){
         res.status(400).send("Cannot find user token");
         return;
@@ -199,19 +197,31 @@ app.post("/api/threads", async (_req: Request, res: Response) => {
     for(const tag of request.content.matchAll(regex)){
         tags += tag;
     }
+    
+    const uid = crypto.randomBytes(3*4).toString('base64');
 
+    console.log(uid)
     const thread : Thread = {
         userId: userId,
+        uid: uid,
         title: request.title,
         content: request.content,
         tags: tags,
         createdDate: new Date(Date.now()).toJSON()
     };
 
-    db.execute(`INSERT INTO thread (title,content,tags,userId,createdDate)
-        VALUES ('${thread.title}','${thread.content}', '${thread.tags}','${thread.userId}','${thread.createdDate}')`);
+    db.execute(`INSERT INTO thread (uid,title,content,tags,userId,upvotes,createdDate)
+        VALUES ('${thread.uid}', '${thread.title}','${thread.content}', '${thread.tags}','${thread.userId}',1, '${thread.createdDate}')`);
 
     res.status(200).send(thread);
+});
+
+app.get("/api/threads/:id", async (_req: Request, res: Response) => {
+
+    var uid = _req.params.id; 
+
+    res.status(200).send(uid);
+
 });
 
 app.listen(port, () => {

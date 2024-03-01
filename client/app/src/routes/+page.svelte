@@ -21,7 +21,7 @@
       <div class="block">
         <div class="mb-2 is-flex">
           <div class="is-flex-direction-row">
-            <span class="has-text-weight-bold is-size-4	mr-3">{thread.upvotes}</span>
+            <span class="has-text-weight-bold is-size-4	mr-3">{thread.upvotes ?? 0}</span>
           </div>
           <div class="is-flex-direction-row">
             <span class="has-text-weight-bold is-size-4	">{thread.title}</span>

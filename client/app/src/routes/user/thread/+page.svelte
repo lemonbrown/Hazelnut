@@ -14,7 +14,7 @@
                 <div class="field">
                   <label class="label">content</label>
                   <div class="control">
-                    <textarea class="textarea" placeholder="e.g. Hello world"></textarea>
+                    <textarea class="textarea" name="content" placeholder="e.g. Hello world"></textarea>
                 </div>
                 </div>
                 <button class="button" type="submit">post</button>

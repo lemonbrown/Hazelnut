@@ -26,5 +26,29 @@ export async function load({ cookies }) {
     }
 
     redirect(302, '/login')
-
 }
+
+
+export const actions = {
+	default: async ({ cookies, request, url }) => {
+        const data = await request.formData();
+        const userToken = cookies.get('AuthorizationToken')?.split(" ")[1];
+
+		let response = await fetch("http://localhost:3000/api/threads", {
+            method: "POST",
+            body: JSON.stringify({
+                title: data.get('title'),
+                content: data.get('content'),
+            }),
+            headers: {
+                "Authorization": "Bearer " + userToken,
+                "Content-Type": "application/json",
+              },
+        }); 
+
+        if(response.ok){
+
+           
+        }
+	}
+};

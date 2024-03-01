@@ -1,5 +1,6 @@
 interface Thread {
     id: number,
+    uid: string,
     userId: number,
     title: string,
     content: string,
