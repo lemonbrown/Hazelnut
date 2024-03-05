@@ -152,6 +152,8 @@ app.get("/api/users", async (_req: Request, res: Response) => {
 
 });
 
+//DESKTOP-Q4KKLK5
+
 app.get("/api/threads/hot", async (_req: Request, res: Response) => {
 
     const db = new DB("hazelnut.db");
