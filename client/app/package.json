@@ -32,6 +32,7 @@
 	"type": "module",
 	"dependencies": {
 		"snarkdown": "^2.0.0",
+		"sqlstring": "^2.3.3",
 		"svelte-markdown": "^0.4.1"
 	}
 }

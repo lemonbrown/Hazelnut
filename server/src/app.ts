@@ -7,13 +7,15 @@ import jwt from "npm:jsonwebtoken";
 // @deno-types="npm:@types/bcryptjs"
 import bcrypt from "npm:bcryptjs";
 import * as crypto from "https://deno.land/std@0.177.0/node/crypto.ts";
-import { DB } from "https://deno.land/x/sqlite/mod.ts";
+import { DB, QueryParameterSet } from "https://deno.land/x/sqlite/mod.ts";
 import migrate from "./migrations/migrate.ts";
 import CreateUserRequest from "./requests/CreateUserRequest.ts";
 import LoginUserRequest from "./requests/LoginUserRequest.ts";
 import User from "./models/User.ts";
 import Thread from "./models/Thread.ts";
 import CreateThreadRequest from "./requests/CreateThreadRequest.ts";
+// @deno-types="npm:@types/sqlstring"
+import sqlstring from "npm:sqlstring";
 
 const env = await load();
 
@@ -170,8 +172,6 @@ app.get("/api/threads/hot", async (_req: Request, res: Response) => {
         }
     });
 
-    console.log(threads);
-
     res.status(200).send(threads);
 });
 
@@ -196,14 +196,14 @@ app.post("/api/threads", async (_req: Request, res: Response) => {
     const db = new DB("hazelnut.db");
     const request : CreateThreadRequest = _req.body;
 
-    //get tags from body
-    const regex = /(#[^ ]*)/g;
-    let tags = "";
-    for(const tag of request.content.matchAll(regex)){
-        tags += tag[0] + ",";
-    }
+    // //get tags from body
+    // const regex = /(#[^ ]*)/g;
+    // let tags = "";
+    // for(const tag of request.content.matchAll(regex)){
+    //     tags += tag[0] + ",";
+    // }
 
-    tags = tags.slice(0,-1);
+    // tags = tags.slice(0,-1);
     
     const uid = crypto.randomBytes(3*4).toString('base64').replace("/", "");
     
@@ -211,13 +211,16 @@ app.post("/api/threads", async (_req: Request, res: Response) => {
         userId: userId,
         uid: uid,
         title: request.title,
-        content: request.content,
-        tags: tags,
+        content:  request.content,
+        tags: request.tags,
         createdDate: new Date(Date.now()).toJSON()
     };
 
-    db.execute(`INSERT INTO thread (uid,title,content,tags,userId,upvotes,createdDate)
-        VALUES ('${thread.uid}', '${thread.title}','${thread.content}', '${thread.tags}','${thread.userId}',1, '${thread.createdDate}')`);
+    const content = thread.content.replace("\r\n", "<br/>").replace("\r", "<br/>").replace("\n", "<br/>");
+
+    db.query(`INSERT INTO thread (uid,title,content,tags,userId,upvotes,createdDate)
+        VALUES ('${thread.uid}', '${thread.title}',:content,'${thread.tags}','${thread.userId}',1, '${thread.createdDate}')`
+        , {content});
 
     res.status(200).send(thread);
 });

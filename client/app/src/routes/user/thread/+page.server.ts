@@ -34,11 +34,13 @@ export const actions = {
         const data = await request.formData();
         const userToken = cookies.get('AuthorizationToken')?.split(" ")[1];
 
+        console.log(data.get('content'));
+
 		let response = await fetch("http://localhost:3000/api/threads", {
             method: "POST",
             body: JSON.stringify({
                 title: data.get('title'),
-                content: data.get('content'),
+                content: data.get('content')
             }),
             headers: {
                 "Authorization": "Bearer " + userToken,
@@ -48,7 +50,10 @@ export const actions = {
 
         if(response.ok){
 
-           
+            const thread = await response.json();
+
+            redirect(302, '/thread/' + thread.uid)
+        
         }
 	}
 };
