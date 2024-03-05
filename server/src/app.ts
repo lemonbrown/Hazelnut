@@ -155,7 +155,7 @@ app.get("/api/users", async (_req: Request, res: Response) => {
 app.get("/api/threads/hot", async (_req: Request, res: Response) => {
 
     const db = new DB("hazelnut.db");
-    const query = db.query(`SELECT id, title, content, tags, upvotes FROM thread ORDER BY createdDate DESC `);
+    const query = db.query(`SELECT id, title, content, tags, upvotes, uid FROM thread ORDER BY createdDate DESC `);
 
     const threads = query.map((thread) => {
         return {
@@ -163,9 +163,12 @@ app.get("/api/threads/hot", async (_req: Request, res: Response) => {
             title: thread[1],
             content: thread[2],
             tags: thread[3],
-            upvotes: parseInt(thread[4])            
+            upvotes: parseInt(thread[4]),
+            uid: thread[5]
         }
     });
+
+    console.log(threads);
 
     res.status(200).send(threads);
 });
@@ -195,12 +198,13 @@ app.post("/api/threads", async (_req: Request, res: Response) => {
     const regex = /(#[^ ]*)/g;
     let tags = "";
     for(const tag of request.content.matchAll(regex)){
-        tags += tag;
+        tags += tag[0] + ",";
     }
-    
-    const uid = crypto.randomBytes(3*4).toString('base64');
 
-    console.log(uid)
+    tags = tags.slice(0,-1);
+    
+    const uid = crypto.randomBytes(3*4).toString('base64').replace("/", "");
+    
     const thread : Thread = {
         userId: userId,
         uid: uid,
@@ -218,9 +222,20 @@ app.post("/api/threads", async (_req: Request, res: Response) => {
 
 app.get("/api/threads/:id", async (_req: Request, res: Response) => {
 
-    var uid = _req.params.id; 
+    let uid = _req.params.id; 
 
-    res.status(200).send(uid);
+    const db = new DB("hazelnut.db");
+    const query = db.query(`SELECT title, content, tags FROM thread WHERE uid = '${uid}' `);
+
+    const thread : Thread = query.map((thread: any) => {
+        return {
+            title: thread[0],
+            content: thread[1],
+            tags: thread[2]
+        } 
+    })[0];
+
+    res.status(200).send(thread);
 
 });
 

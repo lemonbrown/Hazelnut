@@ -20,23 +20,23 @@
       {#each data.threads as thread}
       <div class="block">
         <div class="mb-2 is-flex">
-          <div class="is-flex-direction-row">
-            <span class="has-text-weight-bold is-size-4	mr-3">{thread.upvotes ?? 0}</span>
-          </div>
-          <div class="is-flex-direction-row">
-            <span class="has-text-weight-bold is-size-4	">{thread.title}</span>
-          </div>
-          <!-- <div>
-            <div class="is-flex">
-              <div class="is-flex-direction-row mr-2 has-text-weight-bold ">
-                  #test
-              </div>   
-              <div class="is-flex-direction-row has-text-weight-bold ">
-                #test2
-            </div>             
+          <div class="is-flex-direction-row " style='max-width: fit-content;'>
+            <div style="display:flex;width:60px;justify-content: center;align-items: center">
+              <span style="" class="has-text-weight-bold is-size-4	mr-3">{thread.upvotes ?? 0}</span>
             </div>
-          </div> -->
+          </div>
+          <div class="is-flex-direction-row">
+            <a href="/thread/{thread.uid}" class="has-text-weight-bold is-size-4 is-black" style="color:#4a4a4a">{thread.title}</a>
+          </div>
         </div>
+          <div class="is-flex">
+            <div class="is-flex-direction-row" style='width:60px'></div>
+            {#each thread.tags?.split(',') as tag}
+            <div class="is-flex-direction-row mr-2 has-text-weight-bold ">
+                {tag}
+            </div>   
+            {/each}         
+          </div>
       </div>
       {/each}
 
